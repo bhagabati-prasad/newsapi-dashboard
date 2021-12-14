@@ -7,9 +7,11 @@ import Content from './MainDashboard/Content';
 import Table from './MainDashboard/Table';
 import CardSlider from './MainDashboard/CradSlider';
 import Newschart from './MainDashboard/Chart';
-import Chart from './MainDashboard/Chart';
+// import Chart from './MainDashboard/Chart';
 import Wordcloud from './MainDashboard/Wordcloud';
 import Option from './MainDashboard/Option';
+import D3BarGraph from './MainDashboard/D3BarGraph';
+
 const baseURL = 'https://newerver.herokuapp.com/newslist';
 export default function Main() {
   const [post, setPost] = useState([]);
@@ -30,7 +32,8 @@ export default function Main() {
       <div className='Content'>
         <Content post={post} />
         <Option />
-        <Chart />
+        <D3BarGraph />
+        {/* <Chart /> */}
         <Wordcloud />
         <CardSlider post={post} />
         {post.length > 1 ? <Table alldata={post} /> : null}
