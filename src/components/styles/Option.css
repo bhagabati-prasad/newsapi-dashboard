@@ -1,0 +1,26 @@
+.Option_Main {
+  width: 90%;
+  margin-left: 5%;
+  margin-top: 60px;
+}
+.Option_Main .Option_List {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.Option_Main .Option_List .form-select {
+  width: 150px;
+}
+.Option_Main .Option_Heading {
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 30px;
+  /* identical to box height */
+
+  letter-spacing: -0.02em;
+  text-align: left;
+  color: #344054;
+}

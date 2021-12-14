@@ -1,0 +1,12 @@
+.Main_Dashboard {
+  display: flex;
+  width: 100%;
+}
+.Main_Dashboard .SideBar {
+  display: flex;
+  width: 10%;
+}
+.Main_Dashboard .Content {
+  display: flex;
+  width: 90%;
+}

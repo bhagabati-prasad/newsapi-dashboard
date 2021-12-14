@@ -1,0 +1,103 @@
+.Main_Content {
+  width: 100%;
+}
+.Main_Content .Navbar {
+  width: 90%;
+  display: flex;
+  margin: auto;
+}
+.Main_Content .Navbar .Nav_Body {
+  display: flex;
+  width: 100%;
+}
+.Main_Content .Navbar .Nav_Body .Right {
+  display: flex;
+  width: 40%;
+  flex-direction: row;
+  justify-content: flex-end;
+
+  align-items: center;
+}
+.Main_Content .Navbar .Nav_Body .Right .Nav_menu {
+  padding-left: 25px;
+  text-decoration: none;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  /* identical to box height */
+
+  color: #303030;
+}
+.Main_Content .Navbar .Nav_Body .Left {
+  display: flex;
+  width: 60%;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+.Main_Content .Banner_image {
+  background: url("../MainDashboard/img/jj-ying-DYHx6h3lMdY-unsplash\ 1.png");
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-sizing: border-box;
+  border-radius: 8px;
+  height: 426px;
+  width: 90%;
+  margin: auto;
+}
+.News_Sentiment {
+  margin-bottom: 10px;
+  display: flex;
+  width: 90%;
+  margin: auto;
+  justify-content: space-between;
+}
+.News_Sentiment .News_Box {
+  margin-top: 30px;
+  flex-direction: row;
+  display: flex;
+  width: 30%;
+  padding: 10px;
+  background: #fcfcfd;
+  border: 1px solid rgba(208, 213, 221, 0.47);
+  box-sizing: border-box;
+  border-radius: 8px;
+  align-items: center;
+}
+.News_Sentiment .lefter {
+  align-items: center;
+  display: flex;
+  background: #f7f1ff;
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+  border-radius: 50%;
+}
+.News_Sentiment .lefter img {
+  width: 30px;
+  height: 22px;
+}
+.News_Sentiment .righter {
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+}
+.News_Sentiment .righter .righter-text .info {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 17px;
+  line-height: 22px;
+
+  letter-spacing: -0.02em;
+
+  color: #a4a4a4;
+}
+.News_Sentiment .righter .righter-text .heading {
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 44px;
+
+  color: #6941c6;
+}

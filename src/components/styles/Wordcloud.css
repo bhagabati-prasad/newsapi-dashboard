@@ -1,0 +1,11 @@
+.widgetSm .WordCloud svg {
+  border-radius: 50%;
+  height: 300px;
+  margin-left: 10px;
+  margin-top: 20px;
+}
+.widgetSm {
+  display: flex;
+  justify-content: center;
+  margin-top: 60px;
+}
