@@ -32,9 +32,9 @@ export default function Main() {
       <div className='Content'>
         <Content post={post} />
         <Option />
-        <D3BarGraph />
+        <D3BarGraph posts={post} />
         {/* <Chart /> */}
-        <Wordcloud />
+        <Wordcloud posts={post} />
         <CardSlider post={post} />
         {post.length > 1 ? <Table alldata={post} /> : null}
       </div>
