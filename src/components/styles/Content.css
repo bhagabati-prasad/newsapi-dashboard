@@ -36,11 +36,14 @@
   justify-content: flex-start;
 }
 .Main_Content .Banner_image {
-  background: url("../MainDashboard/img/jj-ying-DYHx6h3lMdY-unsplash\ 1.png");
+  background: url('../MainDashboard/img/jj-ying-DYHx6h3lMdY-unsplash\ 1.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   border: 2px solid rgba(255, 255, 255, 0.4);
   box-sizing: border-box;
   border-radius: 8px;
-  height: 426px;
+  height: 340px;
   width: 90%;
   margin: auto;
 }
@@ -82,7 +85,7 @@
   flex-direction: column;
 }
 .News_Sentiment .righter .righter-text .info {
-  font-family: Inter;
+  font-family: arial;
   font-style: normal;
   font-weight: normal;
   font-size: 17px;

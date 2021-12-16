@@ -1,41 +1,53 @@
-import * as React from "react";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import BootstrapTable from "react-bootstrap-table-next";
+import * as React from 'react';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import BootstrapTable from 'react-bootstrap-table-next';
 
 const Table = ({ alldata }) => {
   const rowStyle = (row, rowIndex) => {
     return rowIndex % 2 === 0
-      ? { backgroundColor: "#F9FAFB" }
-      : { backgroundColor: "white" };
+      ? { backgroundColor: '#F9FAFB' }
+      : { backgroundColor: 'white' };
   };
   const columns = [
-    { dataField: "news_headline", text: "Headline" },
+    { dataField: 'news_headline', text: 'Headline' },
     {
-      dataField: "sentiment",
-      text: "Sentiment",
+      dataField: 'sentiment',
+      text: 'Sentiment',
       style: function callback(cell, row, rowIndex, colIndex) {
-        return cell === "POSITIVE" ? { color: "green" } : { color: "red" };
+        return cell === 'POSITIVE' ? { color: 'green' } : { color: 'red' };
       },
     },
     {
-      dataField: "entity[0]",
-      text: "entity",
+      dataField: 'entity[0]',
+      text: 'entity',
       formatter: (cell, row) => {
-        let data = "";
+        let data = '';
         for (let item in row.entity[0]) {
           data += `${item}: ${row.entity[0][item]},  `;
         }
-        return " " + data;
+        return ' ' + data;
       },
     },
   ];
   return (
     <div>
-      <div className="scrolling-header">Reference Table</div>
+      <div
+        className='scrolling-header'
+        style={{ fontFamily: 'Gilroy', fontWeight: 'bold' }}
+      >
+        Reference Table
+      </div>
 
-      <div style={{ width: "90%", marginLeft: "5%", marginTop: "20px" }}>
+      <div
+        style={{
+          width: '90%',
+          marginLeft: '5%',
+          marginTop: '20px',
+          textAlign: 'left',
+        }}
+      >
         <BootstrapTable
-          keyField="news_headline"
+          keyField='news_headline'
           data={alldata}
           columns={columns}
           rowStyle={rowStyle}
