@@ -28,39 +28,64 @@ const MultiValue = (props) => (
 const animatedComponents = makeAnimated();
 
 // Main Component
-export default function DropDownOption({ posts, setPosts }) {
+export default function DropDownOption({ origPosts, filtPosts, setFiltPosts }) {
   const [dropdown, setDropdown] = useState({
-    // year: [2022, 2021, 2020, 2019],
-    year: [],
+    year: [2022, 2021, 2020, 2019],
+    // year: [],
     month: [
-      // { label: 'Jan', value: 'Jan', category: 'month' },
-      // { label: 'Feb', value: 'Feb', category: 'month' },
-      // { label: 'Mar', value: 'Mar', category: 'month' },
-      // { label: 'Apr', value: 'Apr', category: 'month' },
+      { label: 'Jan', value: '01', category: 'month' },
+      { label: 'Feb', value: '02', category: 'month' },
+      { label: 'Mar', value: '03', category: 'month' },
+      { label: 'Apr', value: '04', category: 'month' },
+      { label: 'May', value: '05', category: 'month' },
+      { label: 'Jun', value: '06', category: 'month' },
+      { label: 'Jul', value: '07', category: 'month' },
+      { label: 'Aug', value: '08', category: 'month' },
+      { label: 'Sep', value: '09', category: 'month' },
+      { label: 'Oct', value: '10', category: 'month' },
+      { label: 'Nov', value: '11', category: 'month' },
+      { label: 'Dec', value: '12', category: 'month' },
     ],
     technology: [
-      // { label: 'AWS', value: 'AWS', category: 'technology' },
-      // { label: 'Salesforce', value: 'Salesforce', category: 'technology' },
+      { label: 'AWS', value: 'AWS', category: 'technology' },
+      { label: 'Salesforce', value: 'Salesforce', category: 'technology' },
+      { label: 'TCS', value: 'TCS', category: 'company' },
     ],
-    company: [
-      // { label: 'TCS', value: 'TCS', category: 'company' },
-      // { label: 'Infosys', value: 'Infosys', category: 'company' },
-    ],
+    company: [{ label: 'Infosys', value: 'Infosys', category: 'company' }],
   });
 
   const [optionSelected, setOptionSelected] = useState();
+  console.log({ optionSelected });
+
+  const handleMonthChange = (selected) => {
+    let filtByMonth = [];
+    if (!!selected.length) {
+      selected.map((item) => {
+        const filtItem = origPosts.filter((post) => {
+          return post.created_on.split('-')?.[1] == item.value;
+        });
+        filtByMonth = [...filtByMonth, ...filtItem];
+      });
+      setFiltPosts(filtByMonth);
+    } else {
+      setFiltPosts(origPosts);
+    }
+  };
 
   const handleChange = (selected) => {
-    // console.log({ selected });
-    // if (selected.category === 'sentiment') {
-    //   let filtPost =
-    //     !!posts.length &&
-    //     posts.filter((post) => {
-    //       console.log(post.sentiment);
-    //       return post.sentiment === selected?.[0]?.value;
-    //     });
-    //   console.log({ filtPost });
-    // }
+    let filtByToken = [];
+    if (!!selected.length) {
+      selected.map((item) => {
+        const filtItem = origPosts.filter((post) => {
+          return post.dictionary_token === item.value;
+        });
+        filtByToken = [...filtByToken, ...filtItem];
+      });
+      console.log(filtByToken);
+      setFiltPosts(filtByToken);
+    } else {
+      setFiltPosts(origPosts);
+    }
   };
 
   return (
@@ -88,7 +113,7 @@ export default function DropDownOption({ posts, setPosts }) {
             closeMenuOnSelect={false}
             hideSelectedOptions={false}
             components={{ Option, MultiValue, animatedComponents }}
-            onChange={handleChange}
+            onChange={handleMonthChange}
             allowSelectAll={true}
             value={optionSelected}
             placeholder='Month'
@@ -99,28 +124,17 @@ export default function DropDownOption({ posts, setPosts }) {
             <option value='2'>Two</option>
             <option value='3'>Three</option>
           </select>
-          <MySelect
-            options={dropdown?.company}
-            isMulti
-            closeMenuOnSelect={false}
-            hideSelectedOptions={false}
-            components={{ Option, MultiValue, animatedComponents }}
-            onChange={handleChange}
-            allowSelectAll={true}
-            value={optionSelected}
-            placeholder='Company'
-          />
-          <MySelect
-            options={dropdown?.technology}
-            isMulti
-            closeMenuOnSelect={false}
-            hideSelectedOptions={false}
-            components={{ Option, MultiValue, animatedComponents }}
-            onChange={handleChange}
-            allowSelectAll={true}
-            value={optionSelected}
-            placeholder='Technology'
-          />
+          <select class='form-select' aria-label='Default select example'>
+            <option selected>Company</option>
+            <option value='1'>TCS</option>
+            <option value='2'>Infosys</option>
+            <option value='3'>Tech Mahindra</option>
+          </select>
+          <select class='form-select' aria-label='Default select example'>
+            <option selected>Technology</option>
+            <option value='1'>AWS</option>
+            <option value='2'>Salesforce</option>
+          </select>
           <select class='form-select' aria-label='Default select example'>
             <option selected>Partner</option>
           </select>

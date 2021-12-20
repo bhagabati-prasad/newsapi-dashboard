@@ -23,24 +23,25 @@ export default function BarChart({ posts }) {
       dataSet: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     },
     NegativeNews: {
-      label: '10/01/2019 - 11/20/2019',
+      label: 'Negative',
       dataSet: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     },
   });
 
-  // useEffect(() => {
-  !!posts.length &&
-    posts
-      .filter((post) => post?.created_on.includes(selectedYear))
-      .map((post) => {
-        const month = Number(post?.created_on.split('-')?.[1]);
-        let postObjPos = data.PositiveNews.dataSet[month - 1];
-        let postObjNeg = data.NegativeNews.dataSet[month - 1];
-        post.sentiment === 'POSITIVE'
-          ? (data.PositiveNews.dataSet[month - 1] = postObjPos + 1)
-          : (data.NegativeNews.dataSet[month - 1] = postObjNeg + 1);
-      });
-  // }, []);
+  useEffect(() => {
+    console.log('barchart posts ', posts);
+    !!posts.length &&
+      posts
+        .filter((post) => post?.created_on.includes(selectedYear))
+        .map((post) => {
+          const month = Number(post?.created_on.split('-')?.[1]);
+          let postObjPos = data.PositiveNews.dataSet[month - 1];
+          let postObjNeg = data.NegativeNews.dataSet[month - 1];
+          post.sentiment === 'POSITIVE'
+            ? (data.PositiveNews.dataSet[month - 1] = postObjPos + 1)
+            : (data.NegativeNews.dataSet[month - 1] = postObjNeg + 1);
+        });
+  }, [posts]);
 
   return (
     <div className='BarChart'>

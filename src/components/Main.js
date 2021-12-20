@@ -17,10 +17,12 @@ const baseURL = 'https://newerver.herokuapp.com/newslist';
 
 export default function Main() {
   const [post, setPost] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
 
   useEffect(() => {
     axios.get(baseURL).then((response) => {
       setPost(response?.data);
+      setFilteredPosts(response?.data);
       // var arr2 = ["IBM", "AWS"],
       //   res = response?.data.filter(
       //     (item) => !!arr2.includes(item?.dictionary_token)
@@ -32,14 +34,18 @@ export default function Main() {
   return (
     <>
       <div className='Content'>
-        <Content post={post} />
-        <Option posts={post} setPosts={setPost} />
-        <BarChart posts={post} />
-        {/* <D3BarGraph posts={post} /> */}
+        <Content post={filteredPosts} />
+        <Option
+          origPosts={post}
+          filtPosts={filteredPosts}
+          setFiltPosts={setFilteredPosts}
+        />
+        <BarChart posts={filteredPosts} />
+        {/* <D3BarGraph posts={filteredPosts} /> */}
         {/* <Chart /> */}
-        <Wordcloud posts={post} />
-        <CardSlider post={post} />
-        {post.length > 1 ? <Table alldata={post} /> : null}
+        <Wordcloud posts={filteredPosts} />
+        <CardSlider post={filteredPosts} />
+        {!!filteredPosts.length && <Table alldata={filteredPosts} />}
       </div>
       {/* <div className="Main_Dashboard">
         <div className="SideBar">
