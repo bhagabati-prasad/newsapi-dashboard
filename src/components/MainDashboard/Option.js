@@ -1,33 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/Option.css';
-import MySelect from './MySelect';
-import makeAnimated from 'react-select/animated';
-import { components } from 'react-select';
+import DropdownTreeSelect from 'react-dropdown-tree-select';
 
-const Option = (props) => {
-  return (
-    <div>
-      <components.Option {...props}>
-        <input
-          type='checkbox'
-          checked={props.isSelected}
-          onChange={() => null}
-        />{' '}
-        <label>{props.label}</label>
-      </components.Option>
-    </div>
-  );
-};
-
-const MultiValue = (props) => (
-  <components.MultiValue {...props}>
-    <span>{props.data.label}</span>
-  </components.MultiValue>
-);
-
-const animatedComponents = makeAnimated();
-
-// Main Component
 export default function DropDownOption({ origPosts, filtPosts, setFiltPosts }) {
   const [dropdown, setDropdown] = useState({
     year: [2022, 2021, 2020, 2019],
@@ -54,39 +28,81 @@ export default function DropDownOption({ origPosts, filtPosts, setFiltPosts }) {
     company: [{ label: 'Infosys', value: 'Infosys', category: 'company' }],
   });
 
-  const [optionSelected, setOptionSelected] = useState();
-  console.log({ optionSelected });
+  const [optionDropdown, setOptionDropdown] = useState([
+    // {
+    //   label: 'year',
+    //   children: [
+    //     { label: '2021', value: '2021' },
+    //     { label: '2020', value: '2020' },
+    //     { label: '2019', value: '2019' },
+    //   ],
+    // },
+    {
+      label: 'month',
+      children: [
+        { label: 'Jan', value: '01', category: 'month' },
+        { label: 'Feb', value: '02', category: 'month' },
+        { label: 'Mar', value: '03', category: 'month' },
+        { label: 'Apr', value: '04', category: 'month' },
+        { label: 'May', value: '05', category: 'month' },
+        { label: 'Jun', value: '06', category: 'month' },
+        { label: 'Jul', value: '07', category: 'month' },
+        { label: 'Aug', value: '08', category: 'month' },
+        { label: 'Sep', value: '09', category: 'month' },
+        { label: 'Oct', value: '10', category: 'month' },
+        { label: 'Nov', value: '11', category: 'month' },
+        { label: 'Dec', value: '12', category: 'month' },
+      ],
+    },
+    {
+      label: 'token',
+      children: [
+        { label: 'Wipro', value: 'Wipro', category: 'dictionary_token' },
+        { label: 'TCS', value: 'TCS', category: 'dictionary_token' },
+        { label: 'AI', value: 'AI', category: 'dictionary_token' },
+        { label: 'Infosys', value: 'Infosys', category: 'dictionary_token' },
+      ],
+    },
+  ]);
 
-  const handleMonthChange = (selected) => {
-    let filtByMonth = [];
-    if (!!selected.length) {
-      selected.map((item) => {
-        const filtItem = origPosts.filter((post) => {
-          return post.created_on.split('-')?.[1] == item.value;
+  const onChange = (currentNode, selectedNodes) => {
+    let filteredItems =
+      !!selectedNodes.length &&
+      selectedNodes.map((node) => {
+        // console.log(node);
+        return origPosts.filter((post) => {
+          if (node.category === 'month') {
+            return post?.created_on.includes(`-${node.value}-`);
+          }
+          for (let [key, value] of Object.entries(post)) {
+            if (node.category === 'month') {
+              return post?.created_on.includes(`-${node.value}-`);
+            }
+            if (key === node.category && value === node.value) {
+              return post;
+            }
+          }
         });
-        filtByMonth = [...filtByMonth, ...filtItem];
       });
-      setFiltPosts(filtByMonth);
-    } else {
-      setFiltPosts(origPosts);
-    }
+    filteredItems = !!filteredItems.length && filteredItems.flat(Infinity);
+    console.log(filteredItems);
+    // setFiltPosts(filteredItems);
   };
 
-  const handleChange = (selected) => {
-    let filtByToken = [];
-    if (!!selected.length) {
-      selected.map((item) => {
-        const filtItem = origPosts.filter((post) => {
-          return post.dictionary_token === item.value;
-        });
-        filtByToken = [...filtByToken, ...filtItem];
-      });
-      console.log(filtByToken);
-      setFiltPosts(filtByToken);
-    } else {
-      setFiltPosts(origPosts);
-    }
-  };
+  // const handleMonthChange = (selected) => {
+  //   let filtByMonth = [];
+  //   if (!!selected.length) {
+  //     selected.map((item) => {
+  //       const filtItem = origPosts.filter((post) => {
+  //         return post.created_on.split('-')?.[1] == item.value;
+  //       });
+  //       filtByMonth = [...filtByMonth, ...filtItem];
+  //     });
+  //     setFiltPosts(filtByMonth);
+  //   } else {
+  //     setFiltPosts(origPosts);
+  //   }
+  // };
 
   return (
     <>
@@ -107,16 +123,11 @@ export default function DropDownOption({ origPosts, filtPosts, setFiltPosts }) {
               );
             })}
           </select>
-          <MySelect
-            options={dropdown?.month}
-            isMulti
-            closeMenuOnSelect={false}
-            hideSelectedOptions={false}
-            components={{ Option, MultiValue, animatedComponents }}
-            onChange={handleMonthChange}
-            allowSelectAll={true}
-            value={optionSelected}
-            placeholder='Month'
+          <DropdownTreeSelect
+            keepTreeOnSearch
+            data={optionDropdown}
+            onChange={onChange}
+            className='mdl-demo'
           />
           <select class='form-select' aria-label='Default select example'>
             <option selected>Entity</option>

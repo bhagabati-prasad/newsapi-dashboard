@@ -28,20 +28,20 @@ export default function BarChart({ posts }) {
     },
   });
 
-  useEffect(() => {
-    console.log('barchart posts ', posts);
-    !!posts.length &&
-      posts
-        .filter((post) => post?.created_on.includes(selectedYear))
-        .map((post) => {
-          const month = Number(post?.created_on.split('-')?.[1]);
-          let postObjPos = data.PositiveNews.dataSet[month - 1];
-          let postObjNeg = data.NegativeNews.dataSet[month - 1];
-          post.sentiment === 'POSITIVE'
-            ? (data.PositiveNews.dataSet[month - 1] = postObjPos + 1)
-            : (data.NegativeNews.dataSet[month - 1] = postObjNeg + 1);
-        });
-  }, [posts]);
+  // useEffect(() => {
+  console.log('barchart posts ', posts);
+  !!posts.length &&
+    posts
+      .filter((post) => post?.created_on.includes(selectedYear))
+      .map((post) => {
+        const month = Number(post?.created_on.split('-')?.[1]);
+        let postObjPos = data.PositiveNews.dataSet[month - 1];
+        let postObjNeg = data.NegativeNews.dataSet[month - 1];
+        post.sentiment === 'POSITIVE'
+          ? (data.PositiveNews.dataSet[month - 1] = postObjPos + 1)
+          : (data.NegativeNews.dataSet[month - 1] = postObjNeg + 1);
+      });
+  // }, [posts]);
 
   return (
     <div className='BarChart'>
