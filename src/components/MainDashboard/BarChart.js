@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 
-export default function BarChart({ posts }) {
+export default function BarChart({ allPosts }) {
+  const [posts, setPosts] = useState(allPosts);
   const [selectedYear, setSelectedYear] = useState(2021);
   const [data, setData] = useState({
     labels: [
@@ -29,9 +30,9 @@ export default function BarChart({ posts }) {
   });
 
   // useEffect(() => {
-  console.log('barchart posts ', posts);
-  !!posts.length &&
-    posts
+  console.log('barchart posts ', allPosts);
+  !!allPosts.length &&
+    allPosts
       .filter((post) => post?.created_on.includes(selectedYear))
       .map((post) => {
         const month = Number(post?.created_on.split('-')?.[1]);
@@ -41,7 +42,7 @@ export default function BarChart({ posts }) {
           ? (data.PositiveNews.dataSet[month - 1] = postObjPos + 1)
           : (data.NegativeNews.dataSet[month - 1] = postObjNeg + 1);
       });
-  // }, [posts]);
+  // }, [allPosts])
 
   return (
     <div className='BarChart'>

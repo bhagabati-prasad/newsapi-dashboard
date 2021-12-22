@@ -40,7 +40,7 @@ export default function Main() {
           filtPosts={filteredPosts}
           setFiltPosts={setFilteredPosts}
         />
-        <BarChart posts={filteredPosts} />
+        <BarChart allPosts={filteredPosts} />
         {/* <D3BarGraph posts={filteredPosts} /> */}
         {/* <Chart /> */}
         <Wordcloud posts={filteredPosts} />

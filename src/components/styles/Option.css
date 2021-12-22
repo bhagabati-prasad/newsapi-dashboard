@@ -95,3 +95,29 @@
   border-right-style: none;
   border-color: #2196f3;
 }
+
+.mdl-demo .react-dropdown-tree-select {
+  position: relative;
+}
+.dropdown ul {
+  margin: 0;
+}
+.dropdown ul.tag-list li.tag-item {
+  display: none;
+}
+.dropdown ul.tag-list li.tag-item:last-child {
+  display: block;
+}
+.dropdown .dropdown-content {
+  position: absolute;
+  width: 100%;
+}
+.dropdown .dropdown-content ul div div {
+  background-color: #fff;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
+  padding: 0.7rem;
+}
+
+.dropdown .dropdown-content ul div li:first-child label input {
+  display: none;
+}
