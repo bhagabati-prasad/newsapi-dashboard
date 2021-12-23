@@ -16,8 +16,8 @@ export default function Wordcloud({ posts }) {
     fontWeight: 'normal',
     padding: 1,
     rotations: 3,
-    rotationAngles: [-180, 360],
-    scale: 'sqrt',
+    rotationAngles: [180, 360],
+    // scale: 'sqrt',
     spiral: 'archimedean',
     transitionDuration: 1000,
   };

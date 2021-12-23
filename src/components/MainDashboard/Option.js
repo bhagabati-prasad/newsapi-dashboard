@@ -30,6 +30,7 @@ export default function DropDownOption({ origPosts, filtPosts, setFiltPosts }) {
   });
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState('01');
+  const [token, setToken] = useState('');
 
   const [optionDropdown, setOptionDropdown] = useState([
     // {
@@ -87,100 +88,49 @@ export default function DropDownOption({ origPosts, filtPosts, setFiltPosts }) {
       const postsByMonth = origPosts.filter((post) =>
         post.created_on.includes(`${year}-${e.target.value}-`)
       );
-      console.log(postsByMonth);
+      console.log({ postsByMonth });
       setFiltPosts(postsByMonth);
     } else {
       setFiltPosts(origPosts);
     }
   };
 
-  const onChange = (currentNode, selectedNodes) => {
-    const filtByNode = selectedNodes.map((node) =>
-      filterArray(filtPosts, [
-        (person) => person.created_on.includes(month),
-        (person) => person.dictionary_token == node.value,
-      ])
-    );
-    const filteredPosts = filtByNode.flat(Infinity);
-    console.log('--filt by node--', filteredPosts);
-    // const selectedPosts = {
-    //   month: [],
-    //   company: [],
-    // };
-    // const filterArr = [];
-    // selectedNodes.map((node) => filterArr.push(node.category));
-    // // console.log({ filterArr });
-
-    // const { created_on, dictionary_token } = origPosts;
-
-    // selectedNodes.map((node) => {
-    //   if (node.category === 'month') {
-    //     origPosts.filter((post) => {
-    //       const val = post?.created_on.includes(`-${node.value}-`);
-    //       if (val) {
-    //         selectedPosts.month.push(post);
-    //       }
-    //       return val;
-    //     });
-    //   }
-    //   if (node.category === 'dictionary_token') {
-    //     origPosts.filter((post) => {
-    //       const val = post.dictionary_token === node.value;
-    //       if (val) selectedPosts.company.push(post);
-    //       return val;
-    //     });
-    //   }
-    // });
-
-    // const filteredPosts = origPosts.filter((post) => {
-    //   return filterArr.every((key) => {
-    //     if (selectedNodes && selectedNodes[key] && !selectedNodes[key].length)
-    //       return true;
-    //     if (Array.isArray(post[key])) {
-    //       return post[key].some((keyEl) => selectedNodes[key].includes(keyEl));
-    //     }
-    //     return (
-    //       selectedNodes &&
-    //       selectedNodes[key] &&
-    //       selectedNodes[key].includes(post[key])
-    //     );
-    //   });
-    // });
-    // console.log({ filteredPosts });
-
-    // console.log('month --', selectedPosts.month);
-    // console.log('company --', selectedPosts.company);
-  };
-
   // const onChange = (currentNode, selectedNodes) => {
-  //   let filteredItems =
-  //     !!selectedNodes.length &&
-  //     selectedNodes.map((node) => {
-  //       // console.log(node);
-  //       return origPosts.filter((post) => {
-  //         if (node.category === 'month') {
-  //           return post?.created_on.includes(`-${node.value}-`);
-  //         }
-  //         for (let [key, value] of Object.entries(post)) {
-  //           if (node.category === 'month') {
-  //             return post?.created_on.includes(`-${node.value}-`);
-  //           }
-  //           if (key === node.category && value === node.value) {
-  //             return post;
-  //           }
-  //         }
-  //       });
-  //     });
-  //   filteredItems = !!filteredItems.length && filteredItems.flat(Infinity);
-  //   console.log(filteredItems);
-  //   // setFiltPosts(filteredItems);
+  //   const filtByNode = selectedNodes.map((node) =>
+  //     filterArray(filtPosts, [
+  //       (person) => person.created_on.includes(month),
+  //       (person) => person.dictionary_token == node.value,
+  //     ])
+  //   );
+  //   const filteredPosts = filtByNode.flat(Infinity);
+  //   console.log('--filt by node--', filteredPosts);
+  //   setFiltPosts(filteredPosts);
   // };
+
+  const handleChangeToken = (e) => {
+    if (e.target.value) {
+      const filterByNode = filterArray(origPosts, [
+        (person) => person.created_on.includes(year),
+        (person) => person.created_on.includes(month),
+        (person) => person.dictionary_token == e.target.value,
+      ]);
+      const filterByToken = filterByNode.flat(Infinity);
+      console.log('filter by token--', filterByToken);
+      setFiltPosts(filterByToken);
+    } else {
+      const postsByMonth = origPosts.filter((post) =>
+        post.created_on.includes(`${year}${month}`)
+      );
+      setFiltPosts(postsByMonth);
+      console.log('else part---', `${year}${month}`, postsByMonth);
+    }
+  };
 
   return (
     <>
       <div className='Option_Main'>
         <div className='Option_Heading'>Monthly Reportage</div>
-        <div className='Option_List'>
+        <div className='Option_List justify-content-start'>
           <select
             onChange={handleYearChange}
             className='form-select'
@@ -213,32 +163,41 @@ export default function DropDownOption({ origPosts, filtPosts, setFiltPosts }) {
               );
             })}
           </select>
-          <DropdownTreeSelect
+          <select
+            onChange={handleChangeToken}
+            className='form-select'
+            aria-label='Default select example'
+          >
+            <option value=''>Company</option>
+            <option value='Wipro'>Wipro</option>
+            <option value='TCS'>TCS</option>
+          </select>
+          {/* <DropdownTreeSelect
             keepTreeOnSearch
             data={optionDropdown}
             onChange={onChange}
             className='mdl-demo'
-          />
-          <select class='form-select' aria-label='Default select example'>
+          /> */}
+          {/* <select className='form-select' aria-label='Default select example'>
             <option selected>Entity</option>
             <option value='1'>One</option>
             <option value='2'>Two</option>
             <option value='3'>Three</option>
           </select>
-          <select class='form-select' aria-label='Default select example'>
+          <select className='form-select' aria-label='Default select example'>
             <option selected>Company</option>
             <option value='1'>TCS</option>
             <option value='2'>Infosys</option>
             <option value='3'>Tech Mahindra</option>
           </select>
-          <select class='form-select' aria-label='Default select example'>
+          <select className='form-select' aria-label='Default select example'>
             <option selected>Technology</option>
             <option value='1'>AWS</option>
             <option value='2'>Salesforce</option>
           </select>
-          <select class='form-select' aria-label='Default select example'>
+          <select className='form-select' aria-label='Default select example'>
             <option selected>Partner</option>
-          </select>
+          </select> */}
         </div>
       </div>
     </>

@@ -30,7 +30,7 @@ export default function BarChart({ allPosts }) {
   });
 
   // useEffect(() => {
-  console.log('barchart posts ', allPosts);
+  // console.log('barchart posts ', allPosts);
   !!allPosts.length &&
     allPosts
       .filter((post) => post?.created_on.includes(selectedYear))

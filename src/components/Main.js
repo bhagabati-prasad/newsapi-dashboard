@@ -17,17 +17,17 @@ const baseURL = 'https://newerver.herokuapp.com/newslist';
 
 export default function Main() {
   const [post, setPost] = useState([]);
+  // let getPosts = localStorage.getItem('posts');
+  // getPosts = JSON.parse(getPosts);
+  // const [filteredPosts, setFilteredPosts] = useState(getPosts || []);
   const [filteredPosts, setFilteredPosts] = useState([]);
 
   useEffect(() => {
     axios.get(baseURL).then((response) => {
       setPost(response?.data);
       setFilteredPosts(response?.data);
-      // var arr2 = ["IBM", "AWS"],
-      //   res = response?.data.filter(
-      //     (item) => !!arr2.includes(item?.dictionary_token)
-      //  );
-      console.log('response ', response?.data);
+      console.log(response.data);
+      // localStorage.setItem('posts', JSON.stringify(response.data));
     });
   }, []);
 
