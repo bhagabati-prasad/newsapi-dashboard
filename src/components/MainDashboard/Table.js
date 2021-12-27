@@ -3,7 +3,6 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import BootstrapTable from 'react-bootstrap-table-next';
 
 const Table = ({ alldata }) => {
-  const [allData, setAllData] = React.useState(alldata);
   const rowStyle = (row, rowIndex) => {
     return rowIndex % 2 === 0
       ? { backgroundColor: '#F9FAFB' }
@@ -48,7 +47,7 @@ const Table = ({ alldata }) => {
         }}
       >
         <BootstrapTable
-          keyField='news_headline'
+          keyField='_id'
           data={alldata}
           columns={columns}
           rowStyle={rowStyle}

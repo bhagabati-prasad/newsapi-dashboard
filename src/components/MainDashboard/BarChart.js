@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Bar } from 'react-chartjs-2';
 
-export default function BarChart({ allPosts }) {
+let BarChart = ({ allPosts }) => {
   const [posts, setPosts] = useState(allPosts);
   const [selectedYear, setSelectedYear] = useState(2021);
   const [data, setData] = useState({
@@ -29,20 +29,37 @@ export default function BarChart({ allPosts }) {
     },
   });
 
-  // useEffect(() => {
-  // console.log('barchart posts ', allPosts);
+  useEffect(() => {
+    console.log('--bar chart useeffect--');
+    setData({
+      ...data,
+      PositiveNews: {
+        label: 'Positive',
+        dataSet: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      },
+      NegativeNews: {
+        label: 'Negative',
+        dataSet: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      },
+    });
+  }, [allPosts]);
+
+  const countPost = useMemo(() => {
+    console.log('-- bar chart count --');
+    return (post) => {
+      const month = Number(post?.created_on.split('-')?.[1]);
+      let postObjPos = data.PositiveNews.dataSet[month - 1];
+      let postObjNeg = data.NegativeNews.dataSet[month - 1];
+      post.sentiment === 'POSITIVE'
+        ? (data.PositiveNews.dataSet[month - 1] = postObjPos + 1)
+        : (data.NegativeNews.dataSet[month - 1] = postObjNeg + 1);
+    };
+  }, [data]);
+
   !!allPosts.length &&
     allPosts
       .filter((post) => post?.created_on.includes(selectedYear))
-      .map((post) => {
-        const month = Number(post?.created_on.split('-')?.[1]);
-        let postObjPos = data.PositiveNews.dataSet[month - 1];
-        let postObjNeg = data.NegativeNews.dataSet[month - 1];
-        post.sentiment === 'POSITIVE'
-          ? (data.PositiveNews.dataSet[month - 1] = postObjPos + 1)
-          : (data.NegativeNews.dataSet[month - 1] = postObjNeg + 1);
-      });
-  // }, [allPosts])
+      .map((post) => countPost(post));
 
   return (
     <div className='BarChart'>
@@ -126,4 +143,6 @@ export default function BarChart({ allPosts }) {
       />
     </div>
   );
-}
+};
+
+export default BarChart;

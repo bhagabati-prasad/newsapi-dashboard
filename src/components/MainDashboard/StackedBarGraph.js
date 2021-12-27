@@ -15,6 +15,10 @@ const StackedBarGraph = ({ datasets, keys, colors }) => {
   const wrapperRef = useRef();
 
   useEffect(() => {
+    setData(datasets);
+  }, [datasets]);
+
+  useEffect(() => {
     const svg = select(svgRef.current);
     const { width, height } = wrapperRef.current.getBoundingClientRect();
     const stackGenerator = stack().keys(keys);

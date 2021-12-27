@@ -6,7 +6,6 @@ import filterArray from 'multi-filter-array';
 export default function DropDownOption({ origPosts, filtPosts, setFiltPosts }) {
   const [dropdown, setDropdown] = useState({
     year: [2022, 2021, 2020, 2019],
-    // year: [],
     month: [
       { label: 'Jan', value: '01', category: 'month' },
       { label: 'Feb', value: '02', category: 'month' },
@@ -178,7 +177,7 @@ export default function DropDownOption({ origPosts, filtPosts, setFiltPosts }) {
             onChange={onChange}
             className='mdl-demo'
           /> */}
-          {/* <select className='form-select' aria-label='Default select example'>
+          <select className='form-select' aria-label='Default select example'>
             <option selected>Entity</option>
             <option value='1'>One</option>
             <option value='2'>Two</option>
@@ -197,7 +196,7 @@ export default function DropDownOption({ origPosts, filtPosts, setFiltPosts }) {
           </select>
           <select className='form-select' aria-label='Default select example'>
             <option selected>Partner</option>
-          </select> */}
+          </select>
         </div>
       </div>
     </>
