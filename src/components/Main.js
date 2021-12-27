@@ -94,7 +94,7 @@ export default function Main() {
     });
 
     axios
-      .get('http://test.coeaibbsr.in/sent_count/')
+      .get('https://newsdashapi.herokuapp.com/')
       .then((res) => {
         const countData = res.data;
         setData(() => {
