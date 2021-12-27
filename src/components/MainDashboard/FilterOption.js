@@ -35,15 +35,10 @@ const FilterOption = ({
       { label: 'Dec', value: 'December' },
     ],
     technologies: [
-      { label: 'AWS', value: 'AWS' },
       { label: 'Blockchain', value: 'Blockchain' },
       { label: 'AI', value: 'AI' },
     ],
     companies: [
-      { label: 'AWS', value: 'AWS' },
-      { label: 'Google', value: 'Google' },
-      { label: 'IBM', value: 'IBM' },
-      { label: 'Microsoft', value: 'Microsoft' },
       { label: 'Tech Mahindra', value: 'Tech Mahindra' },
       { label: 'Infosys', value: 'Infosys' },
       { label: 'Accenture', value: 'Accenture' },
@@ -52,8 +47,10 @@ const FilterOption = ({
       { label: 'Infy', value: 'Infy' },
     ],
     partners: [
-      { label: 'One', value: 'One' },
-      { label: 'Two', value: 'Two' },
+      { label: 'AWS', value: 'AWS' },
+      { label: 'Google', value: 'Google' },
+      { label: 'IBM', value: 'IBM' },
+      { label: 'Microsoft', value: 'Microsoft' },
     ],
   });
 
@@ -111,8 +108,9 @@ const FilterOption = ({
         .map((item) => item.value)
         .includes(option)
     );
+    // http://test.coeaibbsr.in
     axios
-      .get(`http://test.coeaibbsr.in/Sentiment/${monthArr}`)
+      .get(`https://newsdashapi.herokuapp.com/Sentiment/${monthArr}`)
       .then((res) => {
         // console.log(res.data);
         const getRes = res.data;
