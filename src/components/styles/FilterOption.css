@@ -21,11 +21,11 @@
 }
 
 .singleInputBox {
-  width: 190px;
-  height: 60px;
+  width: 160px;
+  height: 50px;
   display: flex;
   align-items: center;
-  font-size: 1.2rem;
+  font-size: 1rem;
   padding: 8px 12px;
   border: 2px solid #ccc;
   border-radius: 10px;
@@ -58,7 +58,7 @@
 }
 
 button.singleInputBox {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   background-color: #1e90ff;
   color: #fff;
   justify-content: center;

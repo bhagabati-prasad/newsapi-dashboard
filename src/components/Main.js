@@ -94,7 +94,7 @@ export default function Main() {
     });
 
     axios
-      .get('https://newsdashapi.herokuapp.com/')
+      .get('/sent_count/')
       .then((res) => {
         const countData = res.data;
         setData(() => {

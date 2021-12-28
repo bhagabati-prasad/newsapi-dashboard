@@ -75,8 +75,8 @@
   padding: 5px;
 }
 .News_Sentiment .lefter img {
-  width: 90%;
-  height: 90%;
+  width: 80%;
+  height: 80%;
   padding: 20px;
   border-radius: 50%;
   background-color: #f7f1ff;
@@ -90,7 +90,7 @@
   font-family: arial;
   font-style: normal;
   font-weight: normal;
-  font-size: 24px;
+  font-size: 18px;
   line-height: 22px;
   letter-spacing: -0.02em;
   margin-bottom: 0.5rem;
@@ -101,7 +101,7 @@
   font-family: 'Poppins';
   font-style: normal;
   font-weight: 600;
-  font-size: 46px;
+  font-size: 36px;
   text-align: left;
   line-height: 44px;
   color: #6941c6;
