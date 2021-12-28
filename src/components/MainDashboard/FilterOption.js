@@ -9,6 +9,7 @@ const FilterOption = ({
   origPosts,
   filtPosts,
   setFiltPosts,
+  setFiltreOptions,
 }) => {
   const [showDropdown, setShowDropdown] = useState({
     year: false,
@@ -103,6 +104,7 @@ const FilterOption = ({
   //   });
 
   const handleSubmit = () => {
+    setFiltreOptions(selectedOptions);
     const monthArr = selectedOptions.filter((option) =>
       Object.values(dropdown.months)
         .map((item) => item.value)

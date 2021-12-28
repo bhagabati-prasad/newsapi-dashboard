@@ -85,6 +85,13 @@ export default function Main() {
   const [post, setPost] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [data, setData] = useState(dataFormat);
+  const [filterOptions, setFiltreOptions] = useState([
+    'April',
+    'June',
+    'November',
+    'Wipro',
+    'TCS',
+  ]);
 
   useEffect(() => {
     axios.get(baseURL).then((response) => {
@@ -149,6 +156,7 @@ export default function Main() {
           origPosts={post}
           filtPosts={filteredPosts}
           setFiltPosts={setFilteredPosts}
+          setFiltreOptions={setFiltreOptions}
         />
         {/* <Option
           origPosts={post}
@@ -158,7 +166,7 @@ export default function Main() {
         {/* <BarChart allPosts={filteredPosts} /> */}
         <D3BarGraph data={data} posts={filteredPosts} />
         {/* <Chart /> */}
-        <Wordcloud posts={filteredPosts} />
+        <Wordcloud filterOptions={filterOptions} />
         <CardSlider post={filteredPosts} />
         {/* {!!filteredPosts.length && <TableExtract alldata={filteredPosts} />} */}
         {!!filteredPosts.length && <Table alldata={filteredPosts} />}

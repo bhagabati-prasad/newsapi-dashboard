@@ -1,10 +1,17 @@
-// import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/Wordcloud.css';
 // import 'd3-transition';
 // import ReactWordcloud from 'react-wordcloud';
 // import words from './words';
 
-export default function Wordcloud({ posts }) {
+export default function Wordcloud({ filterOptions }) {
+  const [imgSrc, setImgSrc] = useState(
+    `https://newsdashapi.herokuapp.com/wordcloud/${filterOptions}`
+  );
+
+  useEffect(() => {
+    setImgSrc(`https://newsdashapi.herokuapp.com/wordcloud/${filterOptions}`);
+  }, [filterOptions]);
   // const [words, setWords] = useState();
   // const options = {
   //   colors: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b'],
@@ -53,11 +60,7 @@ export default function Wordcloud({ posts }) {
     <div className='widgetSm'>
       {/* <div style={{ height: '350px', width: '100%', justifyContent: 'center' }}> */}
       {/* <ReactWordcloud options={options} words={words} className='WordCloud' /> */}
-      <img
-        src='http://newsdashapi.herokuapp.com/wordcloud'
-        className='img-fluid'
-        alt='word cloud'
-      />
+      <img src={imgSrc} className='img-fluid' alt='word cloud' />
       {/* </div> */}
     </div>
   );
