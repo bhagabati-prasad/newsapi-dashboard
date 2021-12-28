@@ -93,48 +93,49 @@ export default function Main() {
       console.log('res all data-- ', response.data);
     });
 
+    axios
+      // .get(
+      //   'https://newsdashapi.herokuapp.com/Sentiment/January,February,March,April,May,June,July,August,September,October,November,December'
+      // )
+      .get('https://newsdashapi.herokuapp.com/sent_count/')
+      .then((res) => {
+        const countData = res.data;
+        setData(() => {
+          let newData = [];
+          for (let i = 0; i < 12; i++) {
+            newData.push({
+              name: countData?.Month?.[i],
+              Positive: countData?.Positive?.[i],
+              Negative: countData?.Negative?.[i],
+            });
+          }
+          console.log({ newData });
+          return newData;
+        });
+      })
+      .catch((err) => console.log(err.response));
+
     // axios
     //   .get(
     //     '/Sentiment/January,February,March,April,May,June,July,August,September,October,November,December'
     //   )
-    //   // .get('/sent_count/')
     //   .then((res) => {
-    //     const countData = res.data;
-    //     setData(() => {
-    //       let newData = [];
-    //       for (let i = 0; i < 12; i++) {
-    //         newData.push({
-    //           name: countData?.Month?.[i],
-    //           Positive: countData?.Positive?.[i],
-    //           Negative: countData?.Negative?.[i],
-    //         });
-    //       }
-    //       console.log({ newData });
-    //       return newData;
-    //     });
+    //     // console.log(res.data);
+    //     const getRes = res.data;
+    //     // console.log({ getRes });
+    //     const filterMonthCount = [];
+    //     for (let index in getRes.Month) {
+    //       let matchedObj = data.find((i) => i.name === getRes.Month[index]);
+    //       matchedObj['Positive'] = getRes.Positive[index];
+    //       matchedObj['Negative'] = getRes.Negative[index];
+    //       console.log('match obj-- ', matchedObj);
+    //       filterMonthCount.push(matchedObj);
+    //       // console.log('--data format', dataFormat);
+    //     }
+    //     setData([...dataFormat, ...filterMonthCount]);
+    //     // console.log('filter month count--', filterMonthCount);
     //   })
     //   .catch((err) => console.log(err.response));
-    axios
-      .get(
-        '/Sentiment/January,February,March,April,May,June,July,August,September,October,November,December'
-      )
-      .then((res) => {
-        // console.log(res.data);
-        const getRes = res.data;
-        // console.log({ getRes });
-        const filterMonthCount = [];
-        for (let index in getRes.Month) {
-          let matchedObj = data.find((i) => i.name === getRes.Month[index]);
-          matchedObj['Positive'] = getRes.Positive[index];
-          matchedObj['Negative'] = getRes.Negative[index];
-          console.log('match obj-- ', matchedObj);
-          filterMonthCount.push(matchedObj);
-          // console.log('--data format', dataFormat);
-        }
-        setData([...dataFormat, ...filterMonthCount]);
-        // console.log('filter month count--', filterMonthCount);
-      })
-      .catch((err) => console.log(err.response));
   }, []);
 
   return (

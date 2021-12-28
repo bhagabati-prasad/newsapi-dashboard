@@ -110,7 +110,7 @@ const FilterOption = ({
     );
     // http://test.coeaibbsr.in
     axios
-      .get(`/Sentiment/${monthArr}`)
+      .get(`https://newsdashapi.herokuapp.com/Sentiment/${monthArr}`)
       .then((res) => {
         // console.log(res.data);
         const getRes = res.data;
@@ -130,7 +130,7 @@ const FilterOption = ({
       .catch((err) => console.log(err.response));
 
     axios
-      .get(`/table/${selectedOptions}`)
+      .get(`https://newsdashapi.herokuapp.com/table/${selectedOptions}`)
       .then((res) => {
         let getFilteredData = res.data;
         getFilteredData = JSON.parse(getFilteredData);
