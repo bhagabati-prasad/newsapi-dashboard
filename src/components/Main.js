@@ -116,7 +116,6 @@ export default function Main() {
               Negative: countData?.Negative?.[i],
             });
           }
-          console.log({ newData });
           return newData;
         });
       })

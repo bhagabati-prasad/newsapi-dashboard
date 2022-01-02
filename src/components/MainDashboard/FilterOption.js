@@ -14,11 +14,26 @@ const FilterOption = ({
   const [showDropdown, setShowDropdown] = useState({
     year: false,
     month: false,
+    duration: false,
     technology: false,
     company: false,
     partner: false,
   });
+  const [selectedMonth, setSelectedMonth] = useState([]);
+  const [selectedTech, setSelectedTech] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState([]);
+  const [selectedPartner, setSelectedPartner] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const date = new Date().toLocaleDateString();
+  const yyyy = date.split('/')[2];
+  const dd = date.split('/')[1];
+  const ydd = date.split('/')[1] - 1 + '';
+  const mm = date.split('/')[0] - 1 + '-' + yyyy;
+  const today = dd + '-' + mm;
+  const yesterday = ydd + '-' + mm;
+
+  // console.log({ today, yesterday });
+
   const [dropdown, setDropdown] = useState({
     years: [2022, 2021, 2020, 2019],
     months: [
@@ -53,6 +68,11 @@ const FilterOption = ({
       { label: 'IBM', value: 'IBM' },
       { label: 'Microsoft', value: 'Microsoft' },
     ],
+    duration: [
+      { label: 'Today', value: today },
+      { label: 'Yesterday', value: yesterday },
+      { label: 'This Month', value: mm },
+    ],
   });
 
   const [curYear, setCurYear] = useState(new Date().getFullYear());
@@ -69,18 +89,159 @@ const FilterOption = ({
     }
   };
 
-  // const handleChangeMonth = (e) => {
-  //   if (!!e.target.value) {
-  //     setMonth(`-${e.target.value}-`);
-  //     const postsByMonth = origPosts.filter((post) =>
-  //       post.created_on.includes(`${year}-${e.target.value}-`)
-  //     );
-  //     console.log({ postsByMonth });
-  //     setFiltPosts(postsByMonth);
-  //   } else {
-  //     setFiltPosts(origPosts);
-  //   }
-  // };
+  const handleSelectAll = (e) => {
+    const isChecked = e.target.checked;
+    const chkBoxVal = e.target.value;
+    if (isChecked) {
+      if (chkBoxVal === 'month') {
+        const allMonths = dropdown.months.map((month) => month.value);
+        setSelectedMonth(allMonths);
+      }
+      if (chkBoxVal === 'tech') {
+        const allTech = dropdown.technologies.map((tech) => tech.value);
+        setSelectedTech(allTech);
+      }
+      if (chkBoxVal === 'company') {
+        const allCompanies = dropdown.companies.map((company) => company.value);
+        setSelectedCompany(allCompanies);
+      }
+      if (chkBoxVal === 'partner') {
+        const allPartners = dropdown.partners.map((partner) => partner.value);
+        setSelectedPartner(allPartners);
+      }
+      setSelectedOptions([
+        ...selectedMonth,
+        ...selectedTech,
+        ...selectedCompany,
+        ...selectedPartner,
+      ]);
+
+      // --- API fetch working ----
+      console.log('--handle Select All IF--', [
+        ...selectedMonth,
+        ...selectedTech,
+        ...selectedCompany,
+        ...selectedPartner,
+      ]);
+
+      axios
+        .get(
+          `https://newsdashapi.herokuapp.com/Sentiment/${[
+            ...selectedMonth,
+            ...selectedTech,
+            ...selectedCompany,
+            ...selectedPartner,
+          ]}`
+        )
+        .then((res) => {
+          // console.log(res.data);
+          const getRes = res.data;
+          // console.log({ getRes });
+          const filterMonthCount = [];
+          for (let index in getRes.Month) {
+            let matchedObj = data.find((i) => i.name === getRes.Month[index]);
+            matchedObj['Positive'] = getRes.Positive[index];
+            matchedObj['Negative'] = getRes.Negative[index];
+            filterMonthCount.push(matchedObj);
+            // console.log('--data format', dataFormat);
+          }
+          setData([...dataFormat, ...filterMonthCount]);
+          // console.log('filter month count--', filterMonthCount);
+        })
+        .catch((err) => console.log(err.response));
+
+      axios
+        .get(
+          `https://newsdashapi.herokuapp.com/table/${[
+            ...selectedMonth,
+            ...selectedTech,
+            ...selectedCompany,
+            ...selectedPartner,
+          ]}`
+        )
+        .then((res) => {
+          let getFilteredData = res.data;
+          getFilteredData = JSON.parse(getFilteredData);
+          console.log({ getFilteredData });
+          getFilteredData = getFilteredData.filter(
+            (item) =>
+              item.year === curYear || item?.created_on.includes(curYear)
+          );
+          setFiltPosts([...new Set(getFilteredData)]);
+        })
+        .catch((err) => console.log(err.response));
+    } else {
+      let filteredSelectedOptions = [];
+      if (chkBoxVal === 'month') {
+        const filtByMonth = selectedOptions.filter(
+          (opt) => !dropdown.months.map((item) => item.value).includes(opt)
+        );
+        filteredSelectedOptions = filtByMonth;
+        setSelectedOptions(filtByMonth);
+      }
+      if (chkBoxVal === 'tech') {
+        const filtByTech = selectedOptions.filter(
+          (opt) =>
+            !dropdown.technologies.map((item) => item.value).includes(opt)
+        );
+        filteredSelectedOptions = filtByTech;
+        setSelectedOptions(filtByTech);
+      }
+      if (chkBoxVal === 'company') {
+        const filtByCompany = selectedOptions.filter(
+          (opt) => !dropdown.companies.map((item) => item.value).includes(opt)
+        );
+        filteredSelectedOptions = filtByCompany;
+        setSelectedOptions(filtByCompany);
+      }
+      if (chkBoxVal === 'partner') {
+        const filtByPartner = selectedOptions.filter(
+          (opt) => !dropdown.partners.map((item) => item.value).includes(opt)
+        );
+        filteredSelectedOptions = filtByPartner;
+        setSelectedOptions(filtByPartner);
+      }
+
+      console.log({ filteredSelectedOptions });
+
+      axios
+        .get(
+          `https://newsdashapi.herokuapp.com/Sentiment/${filteredSelectedOptions}`
+        )
+        .then((res) => {
+          // console.log(res.data);
+          const getRes = res.data;
+          // console.log({ getRes });
+          const filterMonthCount = [];
+          for (let index in getRes.Month) {
+            let matchedObj = data.find((i) => i.name === getRes.Month[index]);
+            matchedObj['Positive'] = getRes.Positive[index];
+            matchedObj['Negative'] = getRes.Negative[index];
+            filterMonthCount.push(matchedObj);
+            // console.log('--data format', dataFormat);
+          }
+          setData([...dataFormat, ...filterMonthCount]);
+          // console.log('filter month count--', filterMonthCount);
+        })
+        .catch((err) => console.log(err.response));
+
+      axios
+        .get(
+          `https://newsdashapi.herokuapp.com/table/${filteredSelectedOptions}`
+        )
+        .then((res) => {
+          let getFilteredData = res.data;
+          getFilteredData = JSON.parse(getFilteredData);
+          console.log({ getFilteredData });
+          getFilteredData = getFilteredData.filter(
+            (item) =>
+              item.year === curYear || item?.created_on.includes(curYear)
+          );
+          setFiltPosts([...new Set(getFilteredData)]);
+        })
+        .catch((err) => console.log(err.response));
+    }
+  };
 
   const handleCheckboxChange = (e) => {
     const currValue = e.target.value;
@@ -90,8 +251,108 @@ const FilterOption = ({
       );
       // console.log({ filteredArray });
       setSelectedOptions(filteredArray);
+
+      const monthArr = filteredArray.filter((option) =>
+        Object.values(dropdown.months)
+          .map((item) => item.value)
+          .includes(option)
+      );
+      // http://test.coeaibbsr.in
+      // --- API fetch working ----
+      console.log('--handleCheckBoxChange IF--');
+      axios
+        .get(`https://newsdashapi.herokuapp.com/Sentiment/${monthArr}`)
+        .then((res) => {
+          // console.log(res.data);
+          const getRes = res.data;
+          // console.log({ getRes });
+          const filterMonthCount = [];
+          for (let index in getRes.Month) {
+            let matchedObj = data.find((i) => i.name === getRes.Month[index]);
+            matchedObj['Positive'] = getRes.Positive[index];
+            matchedObj['Negative'] = getRes.Negative[index];
+            filterMonthCount.push(matchedObj);
+            // console.log('--data format', dataFormat);
+          }
+          console.log({ filterMonthCount });
+
+          setData([...dataFormat, ...filterMonthCount]);
+          // console.log('filter month count--', filterMonthCount);
+        })
+        .catch((err) => console.log(err));
+
+      axios
+        .get(`https://newsdashapi.herokuapp.com/table/${filteredArray}`)
+        .then((res) => {
+          let getFilteredData = res.data;
+          getFilteredData = JSON.parse(getFilteredData);
+          // getFilteredData = getFilteredData.filter((item) => {
+          //   return item.year == curYear || item?.created_on.includes(curYear);
+          // });
+          console.log({ getFilteredData });
+          setFiltPosts(getFilteredData);
+        })
+        .catch((err) => console.log(err));
     } else {
+      const newSelectedOptions = [...selectedOptions, currValue];
       setSelectedOptions([...selectedOptions, currValue]);
+
+      const monthArr = newSelectedOptions.filter((option) =>
+        Object.values(dropdown.months)
+          .map((item) => item.value)
+          .includes(option)
+      );
+      // http://test.coeaibbsr.in
+      console.log('--handleCheckBoxChange ELSE--');
+      axios
+        .get(`https://newsdashapi.herokuapp.com/Sentiment/${monthArr}`)
+        .then((res) => {
+          const getRes = res.data;
+          const filterMonthCount = [];
+          for (let index in getRes.Month) {
+            let matchedObj = data.find((i) => i.name === getRes.Month[index]);
+            matchedObj['Positive'] = getRes.Positive[index];
+            matchedObj['Negative'] = getRes.Negative[index];
+            filterMonthCount.push(matchedObj);
+            // console.log('--data format', dataFormat);
+          }
+          setData([...dataFormat, ...filterMonthCount]);
+          // console.log('filter month count--', filterMonthCount);
+        })
+        .catch((err) => console.log(err));
+
+      axios
+        .get(`https://newsdashapi.herokuapp.com/table/${newSelectedOptions}`)
+        .then((res) => {
+          let getFilteredData = res.data;
+          getFilteredData = JSON.parse(getFilteredData);
+          // getFilteredData = getFilteredData.filter(
+          //   (item) => item.year == curYear || item?.created_on.includes(curYear)
+          // );
+          console.log({ getFilteredData });
+          setFiltPosts(getFilteredData);
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
+  const handleDurationChange = (e) => {
+    if (e.target.value) {
+      const filteredByDuration = filtPosts.filter(
+        // (post) => post?.date.split('/')?.[1] === e.target.value
+        (post) => {
+          if (post?.created_on) {
+            return post?.created_on.includes(e.target.value);
+          }
+          if (post?.date) {
+            return post?.date.split('/')?.[1] === e.target.value;
+          }
+        }
+      );
+      console.log({ filteredByDuration });
+      setFiltPosts(filteredByDuration);
+    } else {
+      setFiltPosts(origPosts);
     }
   };
 
@@ -103,54 +364,53 @@ const FilterOption = ({
   //     console.log({ getFilteredData });
   //   });
 
-  const handleSubmit = () => {
-    setFiltreOptions(selectedOptions);
-    const monthArr = selectedOptions.filter((option) =>
-      Object.values(dropdown.months)
-        .map((item) => item.value)
-        .includes(option)
-    );
-    // http://test.coeaibbsr.in
-    axios
-      .get(`https://newsdashapi.herokuapp.com/Sentiment/${monthArr}`)
-      .then((res) => {
-        // console.log(res.data);
-        const getRes = res.data;
-        // console.log({ getRes });
-        const filterMonthCount = [];
-        for (let index in getRes.Month) {
-          let matchedObj = data.find((i) => i.name === getRes.Month[index]);
-          matchedObj['Positive'] = getRes.Positive[index];
-          matchedObj['Negative'] = getRes.Negative[index];
-          console.log('match obj-- ', matchedObj);
-          filterMonthCount.push(matchedObj);
-          // console.log('--data format', dataFormat);
-        }
-        setData([...dataFormat, ...filterMonthCount]);
-        // console.log('filter month count--', filterMonthCount);
-      })
-      .catch((err) => console.log(err.response));
+  // const handleSubmit = () => {
+  //   setFiltreOptions(selectedOptions);
+  //   const monthArr = selectedOptions.filter((option) =>
+  //     Object.values(dropdown.months)
+  //       .map((item) => item.value)
+  //       .includes(option)
+  //   );
+  //   // http://test.coeaibbsr.in
+  //   axios
+  //     .get(`https://newsdashapi.herokuapp.com/Sentiment/${monthArr}`)
+  //     .then((res) => {
+  //       // console.log(res.data);
+  //       const getRes = res.data;
+  //       // console.log({ getRes });
+  //       const filterMonthCount = [];
+  //       for (let index in getRes.Month) {
+  //         let matchedObj = data.find((i) => i.name === getRes.Month[index]);
+  //         matchedObj['Positive'] = getRes.Positive[index];
+  //         matchedObj['Negative'] = getRes.Negative[index];
+  //         filterMonthCount.push(matchedObj);
+  //         // console.log('--data format', dataFormat);
+  //       }
+  //       setData([...dataFormat, ...filterMonthCount]);
+  //       // console.log('filter month count--', filterMonthCount);
+  //     })
+  //     .catch((err) => console.log(err.response));
 
-    axios
-      .get(`https://newsdashapi.herokuapp.com/table/${selectedOptions}`)
-      .then((res) => {
-        let getFilteredData = res.data;
-        getFilteredData = JSON.parse(getFilteredData);
-        console.log({ getFilteredData });
-        getFilteredData = getFilteredData.filter(
-          (item) => item.year === curYear || item?.created_on.includes(curYear)
-        );
-        setFiltPosts([...new Set(getFilteredData)]);
-      })
-      .catch((err) => console.log(err.response));
+  //   axios
+  //     .get(`https://newsdashapi.herokuapp.com/table/${selectedOptions}`)
+  //     .then((res) => {
+  //       let getFilteredData = res.data;
+  //       getFilteredData = JSON.parse(getFilteredData);
+  //       console.log({ getFilteredData });
+  //       getFilteredData = getFilteredData.filter(
+  //         (item) => item.year === curYear || item?.created_on.includes(curYear)
+  //       );
+  //       setFiltPosts([...new Set(getFilteredData)]);
+  //     })
+  //     .catch((err) => console.log(err.response));
 
-    setShowDropdown({
-      month: false,
-      technology: false,
-      company: false,
-      partner: false,
-    });
-  };
+  //   setShowDropdown({
+  //     month: false,
+  //     technology: false,
+  //     company: false,
+  //     partner: false,
+  //   });
+  // };
 
   return (
     <div className='main_content'>
@@ -187,6 +447,15 @@ const FilterOption = ({
               className='dropdown_chkbox'
               id={showDropdown.month && 'active'}
             >
+              <label htmlFor='select all'>
+                <input
+                  type='checkbox'
+                  value='month'
+                  onChange={handleSelectAll}
+                  id='select all'
+                />
+                &nbsp; Select All
+              </label>
               {dropdown.months.map((month, indx) => (
                 <label htmlFor={month.value} key={indx}>
                   <input
@@ -194,6 +463,7 @@ const FilterOption = ({
                     value={month.value}
                     onChange={handleCheckboxChange}
                     id={month.value}
+                    checked={selectedOptions.includes(month.value)}
                   />
                   &nbsp;
                   {month.label}
@@ -201,6 +471,18 @@ const FilterOption = ({
               ))}
             </div>
           </div>
+          <select
+            name='year'
+            onChange={handleDurationChange}
+            className='singleInputBox'
+          >
+            <option value=''>Duration</option>
+            {dropdown.duration.map((duration) => (
+              <option value={duration.value} key={duration.value}>
+                {duration.label}
+              </option>
+            ))}
+          </select>
           <div
             className='singleInputBox'
             onClick={() =>
@@ -222,6 +504,15 @@ const FilterOption = ({
               className='dropdown_chkbox'
               id={showDropdown.technology && 'active'}
             >
+              <label htmlFor='all_tech'>
+                <input
+                  type='checkbox'
+                  value='tech'
+                  onChange={handleSelectAll}
+                  id='all_tech'
+                />
+                &nbsp; Select All
+              </label>
               {dropdown.technologies.map((tech, indx) => (
                 <label htmlFor={tech.value} key={indx}>
                   <input
@@ -229,6 +520,7 @@ const FilterOption = ({
                     value={tech.value}
                     onChange={handleCheckboxChange}
                     id={tech.value}
+                    checked={selectedOptions.includes(tech.value)}
                   />
                   &nbsp;
                   {tech.label}
@@ -257,6 +549,15 @@ const FilterOption = ({
               className='dropdown_chkbox'
               id={showDropdown.company && 'active'}
             >
+              <label htmlFor='allcompany'>
+                <input
+                  type='checkbox'
+                  value='company'
+                  onChange={handleSelectAll}
+                  id='allcompany'
+                />
+                &nbsp; Select All
+              </label>
               {dropdown.companies.map((company, indx) => (
                 <label htmlFor={company.value} key={indx}>
                   <input
@@ -264,6 +565,7 @@ const FilterOption = ({
                     value={company.value}
                     onChange={handleCheckboxChange}
                     id={company.value}
+                    checked={selectedOptions.includes(company.value)}
                   />
                   &nbsp;
                   {company.label}
@@ -292,6 +594,15 @@ const FilterOption = ({
               className='dropdown_chkbox'
               id={showDropdown.partner && 'active'}
             >
+              <label htmlFor='all_partner'>
+                <input
+                  type='checkbox'
+                  value='partner'
+                  onChange={handleSelectAll}
+                  id='all_partner'
+                />
+                &nbsp; Select All
+              </label>
               {dropdown.partners.map((partner, indx) => (
                 <label htmlFor={partner.value} key={indx}>
                   <input
@@ -299,6 +610,7 @@ const FilterOption = ({
                     value={partner.value}
                     onChange={handleCheckboxChange}
                     id={partner.value}
+                    checked={selectedOptions.includes(partner.value)}
                   />
                   &nbsp;
                   {partner.label}
@@ -306,9 +618,9 @@ const FilterOption = ({
               ))}
             </div>
           </div>
-          <button onClick={handleSubmit} className='singleInputBox'>
+          {/* <button onClick={handleSubmit} className='singleInputBox'>
             Filter
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
