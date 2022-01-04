@@ -42,12 +42,20 @@ let BarChart = ({ allPosts }) => {
         dataSet: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       },
     });
+    return;
   }, [allPosts]);
 
   const countPost = useMemo(() => {
     console.log('-- bar chart count --');
     return (post) => {
-      const month = Number(post?.created_on.split('-')?.[1]);
+      // const month = Number(post?.created_on.split('-')?.[1]);
+      let month;
+      if (post?.created_on) {
+        month = post?.created_on.split('-')?.[1];
+      }
+      if (post?.date) {
+        month = post?.date.split('/')?.[0];
+      }
       let postObjPos = data.PositiveNews.dataSet[month - 1];
       let postObjNeg = data.NegativeNews.dataSet[month - 1];
       post.sentiment === 'POSITIVE'
@@ -60,6 +68,8 @@ let BarChart = ({ allPosts }) => {
     allPosts
       .filter((post) => post?.created_on.includes(selectedYear))
       .map((post) => countPost(post));
+
+  console.log('barchart posts', { posts });
 
   return (
     <div className='BarChart'>

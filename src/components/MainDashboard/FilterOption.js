@@ -26,12 +26,14 @@ const FilterOption = ({
   const [selectedOptions, setSelectedOptions] = useState([]);
   const date = new Date().toLocaleDateString();
   const yyyy = date.split('/')[2];
-  const dd = date.split('/')[1];
-  const ydd = date.split('/')[1] - 1 + '';
-  const mm = date.split('/')[0] - 1 + '-' + yyyy;
+  let dd = date.split('/')[1];
+  if (dd < 10) dd = '0' + dd;
+  let ydd = (date.split('/')[1] - 1 || '01') + '';
+  if (ydd < 10) ydd = '0' + ydd;
+  let mm = (date.split('/')[0] - 1 || '01') + '-' + yyyy;
+  if (mm < 10) mm = '0' + mm;
   const today = dd + '-' + mm;
   const yesterday = ydd + '-' + mm;
-
   // console.log({ today, yesterday });
 
   const [dropdown, setDropdown] = useState({
@@ -326,6 +328,7 @@ const FilterOption = ({
         .then((res) => {
           let getFilteredData = res.data;
           getFilteredData = JSON.parse(getFilteredData);
+          // TODO:
           // getFilteredData = getFilteredData.filter(
           //   (item) => item.year == curYear || item?.created_on.includes(curYear)
           // );
@@ -338,17 +341,14 @@ const FilterOption = ({
 
   const handleDurationChange = (e) => {
     if (e.target.value) {
-      const filteredByDuration = filtPosts.filter(
-        // (post) => post?.date.split('/')?.[1] === e.target.value
-        (post) => {
-          if (post?.created_on) {
-            return post?.created_on.includes(e.target.value);
-          }
-          if (post?.date) {
-            return post?.date.split('/')?.[1] === e.target.value;
-          }
+      const filteredByDuration = filtPosts.filter((post) => {
+        if (post?.created_on) {
+          return post?.created_on.includes(e.target.value);
         }
-      );
+        if (post?.date) {
+          return post?.date.split('/')?.[1] === e.target.value;
+        }
+      });
       console.log({ filteredByDuration });
       setFiltPosts(filteredByDuration);
     } else {
