@@ -284,9 +284,6 @@ const FilterOption = ({
         partners,
       });
 
-      // http://test.coeaibbsr.in
-      // --- API fetch working ----
-      console.log('--handleCheckBoxChange IF--');
       axios
         .get(`https://newsdashapi.herokuapp.com/Sentiment/${monthArr}`)
         .then((res) => {
@@ -345,8 +342,6 @@ const FilterOption = ({
         partners,
       });
 
-      // http://test.coeaibbsr.in
-      console.log('--handleCheckBoxChange ELSE--');
       axios
         .get(`https://newsdashapi.herokuapp.com/Sentiment/${monthArr}`)
         .then((res) => {
@@ -382,16 +377,63 @@ const FilterOption = ({
 
   const handleDurationChange = (e) => {
     if (e.target.value) {
-      const filteredByDuration = filtPosts.filter((post) => {
-        if (post?.created_on) {
-          return post?.created_on.includes(e.target.value);
-        }
-        if (post?.date) {
-          return post?.date.split('/')?.[1] === e.target.value;
-        }
-      });
-      console.log({ filteredByDuration });
-      setFiltPosts(filteredByDuration);
+      // const filteredByDuration = filtPosts.filter((post) => {
+      //   if (post?.created_on) {
+      //     return post?.created_on.includes(e.target.value);
+      //   }
+      //   if (post?.date) {
+      //     return post?.date.split('/')?.[1] === e.target.value;
+      //   }
+      // });
+      // console.log({ filteredByDuration });
+      // setFiltPosts(filteredByDuration);
+
+      axios
+        .get(
+          `https://newsdashapi.herokuapp.com/Sentiment/${[
+            e.target.value,
+            ...selectedTech,
+            ...selectedCompany,
+            ...selectedPartner,
+          ]}`
+        )
+        .then((res) => {
+          // console.log(res.data);
+          const getRes = res.data;
+          // console.log({ getRes });
+          const filterMonthCount = [];
+          for (let index in getRes.Month) {
+            let matchedObj = data.find((i) => i.name === getRes.Month[index]);
+            matchedObj['Positive'] = getRes.Positive[index];
+            matchedObj['Negative'] = getRes.Negative[index];
+            filterMonthCount.push(matchedObj);
+            // console.log('--data format', dataFormat);
+          }
+          setData([...dataFormat, ...filterMonthCount]);
+          // console.log('filter month count--', filterMonthCount);
+        })
+        .catch((err) => console.log(err.response));
+
+      axios
+        .get(
+          `https://newsdashapi.herokuapp.com/table/${[
+            e.target.value,
+            ...selectedTech,
+            ...selectedCompany,
+            ...selectedPartner,
+          ]}`
+        )
+        .then((res) => {
+          let getFilteredData = res.data;
+          getFilteredData = JSON.parse(getFilteredData);
+          console.log({ getFilteredData });
+          getFilteredData = getFilteredData.filter(
+            (item) =>
+              item.year === curYear || item?.created_on.includes(curYear)
+          );
+          setFiltPosts([...new Set(getFilteredData)]);
+        })
+        .catch((err) => console.log(err.response));
     } else {
       setFiltPosts(origPosts);
     }
