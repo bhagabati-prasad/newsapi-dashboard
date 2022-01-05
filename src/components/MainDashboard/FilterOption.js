@@ -24,6 +24,7 @@ const FilterOption = ({
   const [selectedCompany, setSelectedCompany] = useState([]);
   const [selectedPartner, setSelectedPartner] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState([]);
+
   const date = new Date().toLocaleDateString();
   const yyyy = date.split('/')[2];
   let dd = date.split('/')[1];
@@ -77,6 +78,13 @@ const FilterOption = ({
     ],
   });
 
+  const [chkBox, setChkBox] = useState({
+    months: false,
+    technologies: false,
+    companies: false,
+    partners: false,
+  });
+
   const [curYear, setCurYear] = useState(new Date().getFullYear());
   // const [month, setMonth] = useState('01');
 
@@ -94,6 +102,14 @@ const FilterOption = ({
   const handleSelectAll = (e) => {
     const isChecked = e.target.checked;
     const chkBoxVal = e.target.value;
+    chkBoxVal === 'month' && setChkBox({ ...chkBox, months: !chkBox.months });
+    chkBoxVal === 'tech' &&
+      setChkBox({ ...chkBox, technologies: !chkBox.technologies });
+    chkBoxVal === 'company' &&
+      setChkBox({ ...chkBox, companies: !chkBox.companies });
+    chkBoxVal === 'partner' &&
+      setChkBox({ ...chkBox, partners: !chkBox.partners });
+
     if (isChecked) {
       if (chkBoxVal === 'month') {
         const allMonths = dropdown.months.map((month) => month.value);
@@ -112,14 +128,6 @@ const FilterOption = ({
         setSelectedPartner(allPartners);
       }
       setSelectedOptions([
-        ...selectedMonth,
-        ...selectedTech,
-        ...selectedCompany,
-        ...selectedPartner,
-      ]);
-
-      // --- API fetch working ----
-      console.log('--handle Select All IF--', [
         ...selectedMonth,
         ...selectedTech,
         ...selectedCompany,
@@ -245,13 +253,17 @@ const FilterOption = ({
     }
   };
 
+  const checkIsSelectedAll = (category, arr) =>
+    dropdown[category]
+      .map((month) => month.value)
+      .every((mm) => !!arr.length && arr.includes(mm));
+
   const handleCheckboxChange = (e) => {
     const currValue = e.target.value;
     if (selectedOptions.includes(currValue)) {
       const filteredArray = selectedOptions.filter(
         (option) => option !== currValue
       );
-      // console.log({ filteredArray });
       setSelectedOptions(filteredArray);
 
       const monthArr = filteredArray.filter((option) =>
@@ -259,6 +271,19 @@ const FilterOption = ({
           .map((item) => item.value)
           .includes(option)
       );
+
+      const months = checkIsSelectedAll('months', filteredArray);
+      const technologies = checkIsSelectedAll('technologies', filteredArray);
+      const companies = checkIsSelectedAll('companies', filteredArray);
+      const partners = checkIsSelectedAll('partners', filteredArray);
+      setChkBox({
+        ...chkBox,
+        months,
+        technologies,
+        companies,
+        partners,
+      });
+
       // http://test.coeaibbsr.in
       // --- API fetch working ----
       console.log('--handleCheckBoxChange IF--');
@@ -304,6 +329,22 @@ const FilterOption = ({
           .map((item) => item.value)
           .includes(option)
       );
+
+      const months = checkIsSelectedAll('months', newSelectedOptions);
+      const technologies = checkIsSelectedAll(
+        'technologies',
+        newSelectedOptions
+      );
+      const companies = checkIsSelectedAll('companies', newSelectedOptions);
+      const partners = checkIsSelectedAll('partners', newSelectedOptions);
+      setChkBox({
+        ...chkBox,
+        months,
+        technologies,
+        companies,
+        partners,
+      });
+
       // http://test.coeaibbsr.in
       console.log('--handleCheckBoxChange ELSE--');
       axios
@@ -356,62 +397,6 @@ const FilterOption = ({
     }
   };
 
-  // axios
-  //   .get('http://test.coeaibbsr.in/table/November,April,Wipro')
-  //   .then((res) => {
-  //     let getFilteredData = res.data;
-  //     getFilteredData = JSON.parse(getFilteredData);
-  //     console.log({ getFilteredData });
-  //   });
-
-  // const handleSubmit = () => {
-  //   setFiltreOptions(selectedOptions);
-  //   const monthArr = selectedOptions.filter((option) =>
-  //     Object.values(dropdown.months)
-  //       .map((item) => item.value)
-  //       .includes(option)
-  //   );
-  //   // http://test.coeaibbsr.in
-  //   axios
-  //     .get(`https://newsdashapi.herokuapp.com/Sentiment/${monthArr}`)
-  //     .then((res) => {
-  //       // console.log(res.data);
-  //       const getRes = res.data;
-  //       // console.log({ getRes });
-  //       const filterMonthCount = [];
-  //       for (let index in getRes.Month) {
-  //         let matchedObj = data.find((i) => i.name === getRes.Month[index]);
-  //         matchedObj['Positive'] = getRes.Positive[index];
-  //         matchedObj['Negative'] = getRes.Negative[index];
-  //         filterMonthCount.push(matchedObj);
-  //         // console.log('--data format', dataFormat);
-  //       }
-  //       setData([...dataFormat, ...filterMonthCount]);
-  //       // console.log('filter month count--', filterMonthCount);
-  //     })
-  //     .catch((err) => console.log(err.response));
-
-  //   axios
-  //     .get(`https://newsdashapi.herokuapp.com/table/${selectedOptions}`)
-  //     .then((res) => {
-  //       let getFilteredData = res.data;
-  //       getFilteredData = JSON.parse(getFilteredData);
-  //       console.log({ getFilteredData });
-  //       getFilteredData = getFilteredData.filter(
-  //         (item) => item.year === curYear || item?.created_on.includes(curYear)
-  //       );
-  //       setFiltPosts([...new Set(getFilteredData)]);
-  //     })
-  //     .catch((err) => console.log(err.response));
-
-  //   setShowDropdown({
-  //     month: false,
-  //     technology: false,
-  //     company: false,
-  //     partner: false,
-  //   });
-  // };
-
   return (
     <div className='main_content'>
       <div className='content_section'>
@@ -453,6 +438,7 @@ const FilterOption = ({
                   value='month'
                   onChange={handleSelectAll}
                   id='select all'
+                  checked={chkBox.months}
                 />
                 &nbsp; Select All
               </label>
@@ -510,6 +496,7 @@ const FilterOption = ({
                   value='tech'
                   onChange={handleSelectAll}
                   id='all_tech'
+                  checked={chkBox.technologies}
                 />
                 &nbsp; Select All
               </label>
@@ -555,6 +542,7 @@ const FilterOption = ({
                   value='company'
                   onChange={handleSelectAll}
                   id='allcompany'
+                  checked={chkBox.companies}
                 />
                 &nbsp; Select All
               </label>
@@ -600,6 +588,7 @@ const FilterOption = ({
                   value='partner'
                   onChange={handleSelectAll}
                   id='all_partner'
+                  checked={chkBox.partners}
                 />
                 &nbsp; Select All
               </label>
