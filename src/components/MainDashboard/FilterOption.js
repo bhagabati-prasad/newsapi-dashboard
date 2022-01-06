@@ -133,6 +133,12 @@ const FilterOption = ({
         ...selectedCompany,
         ...selectedPartner,
       ]);
+      setFiltreOptions([
+        ...selectedMonth,
+        ...selectedTech,
+        ...selectedCompany,
+        ...selectedPartner,
+      ]);
 
       axios
         .get(
@@ -214,6 +220,8 @@ const FilterOption = ({
 
       console.log({ filteredSelectedOptions });
 
+      setFiltreOptions(filteredSelectedOptions);
+
       axios
         .get(
           `https://newsdashapi.herokuapp.com/Sentiment/${filteredSelectedOptions}`
@@ -266,11 +274,11 @@ const FilterOption = ({
       );
       setSelectedOptions(filteredArray);
 
-      const monthArr = filteredArray.filter((option) =>
-        Object.values(dropdown.months)
-          .map((item) => item.value)
-          .includes(option)
-      );
+      // const monthArr = filteredArray.filter((option) =>
+      //   Object.values(dropdown.months)
+      //     .map((item) => item.value)
+      //     .includes(option)
+      // );
 
       const months = checkIsSelectedAll('months', filteredArray);
       const technologies = checkIsSelectedAll('technologies', filteredArray);
@@ -284,8 +292,10 @@ const FilterOption = ({
         partners,
       });
 
+      setFiltreOptions(filteredArray);
+
       axios
-        .get(`https://newsdashapi.herokuapp.com/Sentiment/${monthArr}`)
+        .get(`https://newsdashapi.herokuapp.com/Sentiment/${filteredArray}`)
         .then((res) => {
           // console.log(res.data);
           const getRes = res.data;
@@ -321,11 +331,11 @@ const FilterOption = ({
       const newSelectedOptions = [...selectedOptions, currValue];
       setSelectedOptions([...selectedOptions, currValue]);
 
-      const monthArr = newSelectedOptions.filter((option) =>
-        Object.values(dropdown.months)
-          .map((item) => item.value)
-          .includes(option)
-      );
+      // const monthArr = newSelectedOptions.filter((option) =>
+      //   Object.values(dropdown.months)
+      //     .map((item) => item.value)
+      //     .includes(option)
+      // );
 
       const months = checkIsSelectedAll('months', newSelectedOptions);
       const technologies = checkIsSelectedAll(
@@ -342,8 +352,12 @@ const FilterOption = ({
         partners,
       });
 
+      setFiltreOptions(newSelectedOptions);
+
       axios
-        .get(`https://newsdashapi.herokuapp.com/Sentiment/${monthArr}`)
+        .get(
+          `https://newsdashapi.herokuapp.com/Sentiment/${newSelectedOptions}`
+        )
         .then((res) => {
           const getRes = res.data;
           const filterMonthCount = [];
@@ -387,6 +401,13 @@ const FilterOption = ({
       // });
       // console.log({ filteredByDuration });
       // setFiltPosts(filteredByDuration);
+
+      setFiltreOptions([
+        e.target.value,
+        ...selectedTech,
+        ...selectedCompany,
+        ...selectedPartner,
+      ]);
 
       axios
         .get(
